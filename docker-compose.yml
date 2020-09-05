@@ -1,0 +1,34 @@
+### myapp/docker-compose.yml ###
+version: '3'
+services: 
+  silverstripe:
+    build: .
+    volumes: 
+      - ./mysilverstripeapp:/var/www/html
+    ports: 
+      - 8080:80
+    depends_on: 
+      - mydb
+    environment: 
+      DOCUMENT_ROOT: /var/www/html/public
+      
+      # Regular Silverstripe CMS environment variables
+      SS_DATABASE_CLASS: MySQLDatabase
+      SS_DATABASE_SERVER: mydb # Should be the same as mysql service name
+      SS_DATABASE_USERNAME: root
+      SS_DATABASE_PASSWORD: mysecretpassword
+      SS_DATABASE_NAME: SS_docker-demo
+
+      SS_DEFAULT_ADMIN_USERNAME: admin
+      SS_DEFAULT_ADMIN_PASSWORD: password
+
+      SS_ENVIRONMENT_TYPE: dev
+  mydb:
+    image: mysql:5.7
+    volumes: 
+      - db_data:/var/lib/mysql
+    environment: 
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+
+volumes:
+  db_data:
